@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: changeme-pre #NAMESPACE
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: changeme-mysql-pvc #Mysql volume name
+  name: changeme-pre #NAMESPACE
+spec:
+  storageClassName: nfs-csi
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: public-content-pvc  #doesn't need a change
+  name: changeme-pre #NAMESPACE
+spec:
+  storageClassName: nfs-csi
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: private-content-pvc #doesn't need a change
+  name: changeme-pre #NAMESPACE
+spec:
+  storageClassName: nfs-csi
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

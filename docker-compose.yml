@@ -1,0 +1,25 @@
+version: '3'
+services:
+  #Nombre del modulo, como ejemplo, proyecto en servicio y nombre de contenedor
+  proyecto: 
+    container_name: 'proyecto'
+    working_dir: '/var/www/html/' #Ruta interna del docker, no cambiar
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - "80:80"
+    #Nombre de la imagen generada con el docker buid  
+    image: proyecto
+    environment:
+      #Variables de entorno, SOURCE y SIMPLE se mantienen sin alterar para uso localhost
+      #(para pre y prod se ajustarán segun se configure el despliegue)
+      - SOURCE=localhost
+      - SIMPLE=simple-localhost   
+      # Datos de conexión a su base de datos local (igual, en pre-prod tomará los configurados en la configuración de despliegue)
+      - ENDPOINT=148.213.3.asignada
+      - DATABASE=nombreBD
+      - USERD=UsuariodeBD
+      - PASSD=ClaveDeBD
+    volumes:
+    # Mapeo de la ruta donde está su proyecto y la ruta mapeada dentro del docker
+      - D:\PROYECTOS\SISTEMAS\PLANTILLA\proyecto\public-html\:/var/www/proyecto/
