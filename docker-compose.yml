@@ -1,3 +1,4 @@
+## Cambie las referencias de proyecto al nombre de su proyecto como en los pasos anteriores.
 version: '3'
 services:
   #Nombre del modulo, como ejemplo, proyecto en servicio y nombre de contenedor
@@ -15,11 +16,11 @@ services:
       #(para pre y prod se ajustarán segun se configure el despliegue)
       - SOURCE=localhost
       - SIMPLE=simple-localhost   
-      # Datos de conexión a su base de datos local (igual, en pre-prod tomará los configurados en la configuración de despliegue)
-      - ENDPOINT=148.213.3.asignada
+      # Datos de conexión a su base de datos local (igual, en pre-prod tomará los datos de la configuración de despliegue)
+      - ENDPOINT=148.213.n.m 
       - DATABASE=nombreBD
       - USERD=UsuariodeBD
       - PASSD=ClaveDeBD
     volumes:
-    # Mapeo de la ruta donde está su proyecto y la ruta mapeada dentro del docker
+    # Mapeo de la ruta donde está su proyecto y la ruta mapeada dentro del docker 
       - D:\PROYECTOS\SISTEMAS\PLANTILLA\proyecto\public-html\:/var/www/proyecto/

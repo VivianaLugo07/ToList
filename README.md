@@ -1,3 +1,46 @@
+
+## COMO USARLO
+
+1.- Clonar repo
+```
+ git clone https://github.com/sistemas-ucol-mx/plantilla-despliegue
+```
+2.-  Copia el código de tu proyecto en la carpeta public-html
+  ![imagen](./img/estructura1.png)
+
+3.- En el public-html/Dockerfile cambia proyecto por el nombre de tu proyecto (ej, sibeucol)
+  ![imagen](./img/dockerfile.png)
+
+4.- En el public-html/000-default.conf cambia proyecto por el nombre de tu proyecto (ej, sibeucol)
+  ![imagen](./img/000.png)
+
+5.- Construye la imagen del contenedor
+```
+ docker build .....
+```
+
+5.- Actualiza el docker-compose.yml con los datos correspondientes, segun se indica en los comentarios.
+  ![imagen](./img/docker-compose.png)
+
+
+6.- Levanta el servicio.
+```
+ docker-compose up
+```
+
+7.- Consulta el contenido en su navegador
+```
+ http://localhost/proyecto/
+```
+
+5.- Revisa los ejemplos contenidos en el repo:
+  ![imagen](./img/ejemplos.png)
+ - federacion.php (conexión con la federación ucol)
+ - t33st.php (conexión a BD)
+
+
+## PARA PRE-PROD
+
 **Structure inside the container and public-hmtl folder for preproduction environment:**
 ![imagen](./img/structure.jpg)
 
