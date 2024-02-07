@@ -36,6 +36,8 @@ RUN docker-php-ext-install calendar
 RUN docker-php-ext-install pdo_mysql \
   && pecl install sqlsrv pdo_sqlsrv \
   && docker-php-ext-enable sqlsrv pdo_sqlsrv
+RUN docker-php-ext-install mysqli
+
 
 # Habilita mod_rewrite en Apache
 COPY 000-default.conf  /etc/apache2/sites-available/000-default.conf
