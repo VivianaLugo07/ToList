@@ -34,9 +34,10 @@
 ```
 
 5.- Revisa los ejemplos contenidos en el repo:
+  ![imagen](./img/ejemplos.png)
  - federacion.php (conexión con la federación ucol)
  - t33st.php (conexión a BD)
-  ![imagen](./img/ejemplos.png)
+
 
 ## PARA PRE-PROD
 
