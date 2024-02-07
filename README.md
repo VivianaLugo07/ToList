@@ -33,16 +33,16 @@
  http://localhost/proyecto/
 ```
 
-5.- Revisa los ejemplos contenidos en el repo:
-  ![imagen](./img/ejemplos.png)
+5.- Revisa los ejemplos contenidos en la carpeta public-html:
  - federacion.php (conexión con la federación ucol)
- - t33st.php (conexión a BD)
+ - bd-pdo.php (conexión a BD)
+ - bd-mysqli.php (conexión a BD)
 
 
 ## PARA PRE-PROD
 
 **Structure inside the container and public-hmtl folder for preproduction environment:**
-![imagen](./img/structure.jpg)
+![imagen](./img/structure.png)
 
 
 Routes:
@@ -52,8 +52,9 @@ Routes:
 
 (simplesaml): https://pre-datacenter.ucol.mx/simple-proyecto/
 
-**Probar conectividad con base de datos:**
-https://pre-datacenter.ucol.mx/proyecto/t33st.php
+**Probar conectividad con base de datos en local:**
+http://localhost/proyecto/bd-pdo.php
+http://localhost/proyecto/bd-mysqli.php
 
 ![imagen](./img/t33st.jpg)
 
