@@ -17,10 +17,10 @@ services:
       - SOURCE=localhost
       - SIMPLE=simple-localhost   
       # Datos de conexión a su base de datos local (igual, en pre-prod tomará los datos de la configuración de despliegue)
-      - ENDPOINT=148.213.n.m 
-      - DATABASE=nombreBD
-      - USERD=UsuariodeBD
-      - PASSD=ClaveDeBD
+      - ENDPOINT=db.ucol.mx
+      - DATABASE=databasename
+      - USERD=username
+      - PASSD=password$
     volumes:
     # Mapeo de la ruta donde está su proyecto y la ruta mapeada dentro del docker 
       - D:\PROYECTOS\SISTEMAS\PLANTILLA\proyecto\public-html\:/var/www/proyecto/
