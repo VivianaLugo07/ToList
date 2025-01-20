@@ -8,19 +8,19 @@
 2.-  Copia el código de tu proyecto en la carpeta public-html
   ![imagen](./img/estructura1.png)
 
-3.- En el public-html/Dockerfile cambia proyecto por el nombre de tu proyecto (ej, sibeucol)
-  ![imagen](./img/dockerfile.png)
+<!-- 3.- En el public-html/Dockerfile cambia proyecto por el nombre de tu proyecto (ej, sibeucol)
+  ![imagen](./img/dockerfile.png) -->
 
-4.- En el public-html/000-default.conf cambia proyecto por el nombre de tu proyecto (ej, sibeucol)
+3.- En el public-html/000-default.conf cambia proyecto por el nombre de tu proyecto (ej, sibeucol)
   ![imagen](./img/000.png)
 
-5.- Construye la imagen del contenedor
+4.- Construye la imagen del contenedor
 ```
  docker build .....
 ```
 
-5.- Actualiza el docker-compose.yml con los datos correspondientes, segun se indica en los comentarios.
-  ![imagen](./img/docker-compose.png)
+5.- Crea una copia del archivo .env.example a .env y actualiza tu archivo de env con los datos correspondientes.
+  <!-- ![imagen](./img/docker-compose.png) -->
 
 
 6.- Levanta el servicio.
