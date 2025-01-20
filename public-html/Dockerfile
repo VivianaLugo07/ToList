@@ -22,20 +22,20 @@ RUN mkdir -p /var/www/proyecto/public_content
 RUN echo "session.save_path=\"/tmp\"" >> /usr/local/etc/php/php.ini
 
 # Install SqlServer PHP driver
-RUN cat /etc/os-release \
-  && apt-get update \
-  && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-  && curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list \
-      > /etc/apt/sources.list.d/mssql-release.list \
-  && apt-get install -y --no-install-recommends apt-transport-https \
-  && apt-get update \
-  && ACCEPT_EULA=Y apt-get -y --no-install-recommends install unixodbc-dev msodbcsql17
+# RUN cat /etc/os-release \
+#   && apt-get update \
+#   && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+#   && curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list \
+#       > /etc/apt/sources.list.d/mssql-release.list \
+#   && apt-get install -y --no-install-recommends apt-transport-https \
+#   && apt-get update \
+#   && ACCEPT_EULA=Y apt-get -y --no-install-recommends install unixodbc-dev msodbcsql17
 
 # Install PHP extensions
 RUN docker-php-ext-install calendar
 RUN docker-php-ext-install pdo_mysql \
-  && pecl install sqlsrv pdo_sqlsrv \
-  && docker-php-ext-enable sqlsrv pdo_sqlsrv
+  # && pecl install sqlsrv pdo_sqlsrv \
+  # && docker-php-ext-enable sqlsrv pdo_sqlsrv
 RUN docker-php-ext-install mysqli
 
 

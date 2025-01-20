@@ -8,19 +8,19 @@ services:
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     ports:
-      - ${APACHE_PORT}:80
+      - 80:80
     #Nombre de la imagen generada con el docker buid  
     image: ${PROJECT_NAME_IMG}
     environment:
       #Variables de entorno, SOURCE y SIMPLE se mantienen sin alterar para uso localhost
       #(para pre y prod se ajustarán segun se configure el despliegue)
-      - SOURCE=localhost
-      - SIMPLE=simple-localhost   
+      - SOURCE=${SOURCE}
+      - SIMPLE=${SIMPLE}  
       # Datos de conexión a su base de datos local (igual, en pre-prod tomará los datos de la configuración de despliegue)
-      - ENDPOINT=db.ucol.mx
-      - DATABASE=databasename
-      - USERD=username
-      - PASSD=password$
+      - ENDPOINT=${ENDPOINT}
+      - DATABASE=${MYSQL_DATABASE}
+      - USERD=${MYSQL_USER}
+      - PASSD=${MYSQL_PASSWORD}
     volumes:
     # Mapeo de la ruta donde está su proyecto y la ruta mapeada dentro del docker 
       - .\public-html\:/var/www/proyecto/
