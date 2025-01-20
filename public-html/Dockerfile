@@ -33,7 +33,7 @@ RUN echo "session.save_path=\"/tmp\"" >> /usr/local/etc/php/php.ini
 
 # Install PHP extensions
 RUN docker-php-ext-install calendar
-RUN docker-php-ext-install pdo_mysql \
+RUN docker-php-ext-install pdo_mysql 
   # && pecl install sqlsrv pdo_sqlsrv \
   # && docker-php-ext-enable sqlsrv pdo_sqlsrv
 RUN docker-php-ext-install mysqli
