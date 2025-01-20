@@ -3,14 +3,14 @@ version: '3'
 services:
   #Nombre del modulo, como ejemplo, proyecto en servicio y nombre de contenedor
   proyecto: 
-    container_name: 'proyecto'
+    container_name: '${PROJECT_NAME}'
     working_dir: '/var/www/html/' #Ruta interna del docker, no cambiar
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     ports:
-      - "80:80"
+      - ${APACHE_PORT}:80
     #Nombre de la imagen generada con el docker buid  
-    image: proyecto
+    image: ${PROJECT_NAME_IMG}
     environment:
       #Variables de entorno, SOURCE y SIMPLE se mantienen sin alterar para uso localhost
       #(para pre y prod se ajustarán segun se configure el despliegue)
@@ -23,4 +23,34 @@ services:
       - PASSD=password$
     volumes:
     # Mapeo de la ruta donde está su proyecto y la ruta mapeada dentro del docker 
-      - D:\PROYECTOS\SISTEMAS\PLANTILLA\proyecto\public-html\:/var/www/proyecto/
+      - .\public-html\:/var/www/proyecto/
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    depends_on:
+      - mysql
+    ports:
+      - ${PHPMYADMIN_PORT}:80
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+volumes:
+  mysql_data:  
