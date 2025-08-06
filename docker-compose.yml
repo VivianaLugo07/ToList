@@ -23,13 +23,13 @@ services:
       - PASSD=${MYSQL_PASSWORD}
     volumes:
     # Mapeo de la ruta donde está su proyecto y la ruta mapeada dentro del docker 
-      - .\public-html\:/var/www/proyecto/
+      - .\public-html\:/var/www/${PROJECT_NAME}/
     depends_on:
       - mysql
 
   mysql:
     image: mysql:8.0
-    container_name: mysql
+    container_name: ${PROJECT_NAME}_mysql
     ports:
       - "3306:3306"
     environment:
@@ -43,7 +43,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
-    container_name: phpmyadmin
+    container_name: ${PROJECT_NAME}_phpmyadmin
     depends_on:
       - mysql
     ports:
