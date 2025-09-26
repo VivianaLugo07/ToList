@@ -1,0 +1,165 @@
+/* Estilos generales */
+body {
+    font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fbfd;
+    color: var(--color-texto-principal);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh; /* Para que el footer si hubiera, vaya abajo */
+    box-sizing: border-box;
+}
+
+/* Contenedor principal del formulario */
+#tareas {
+    background-color: #ffffff;
+    padding: 25px 30px; /* Más padding horizontal */
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(128, 128, 128, 0.542); /* Sombra más sutil */
+    width: 100%;
+    max-width: 550px; /* Un poco más ancho */
+    margin-bottom: 25px;
+    box-sizing: border-box;
+    border: 1px solid #e0e0e0; /* Borde sutil */
+}
+
+h1 {
+    text-align: center;
+    color: #38686A;
+    margin-top: 0;
+    margin-bottom: 30px; /* Más espacio debajo del título */
+    font-size: 1.8em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px; /* Más espacio entre label y input */
+    font-weight: 500;
+    color: #666666;
+    font-size: 0.9em;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px; /* Más padding */
+    margin-bottom: 20px; /* Más espacio */
+    border: 1px solid #A3B4A2; /* Borde con color de la paleta */
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+    color: #333333;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input[type="text"]::placeholder {
+    color: #CDC6AE; /* Placeholder con color de la paleta */
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 2px rgba(34, 63, 79, 0.2); /* Sombra suave al enfocar */
+}
+
+/* Botón principal de agregar */
+#btn_agregar {
+    width: 100%;
+    padding: 13px;
+    background-color: #38686A;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.05em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    letter-spacing: 0.5px;
+}
+
+#btn_agregar:hover {
+    color: rgb(113, 109, 109);
+    background-color: #a3b4a2; /* Cambio de color al hacer hover */
+    transform: translateY(-1px); /* Efecto ligero de "levantar" */
+}
+
+#btn_agregar:active {
+    transform: translateY(0); /* Al hacer clic se regresa */
+}
+
+/* Contenedor de las tareas agregadas */
+#contenedor {
+    width: 100%;
+    max-width: 550px;
+}
+
+/* Estilo para cada tarea individual */
+.lista_Tareas {
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(190, 188, 188, 0.738);
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column; /* Cambiado a columna para mejor organización */
+    gap: 5px; /* Espacio entre título y descripción */
+    border-left: 5px solid #187795; /* Barra de color a la izquierda */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    position: relative; /* Para posicionar el botón de eliminar */
+}
+
+.lista_Tareas:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px grey;
+}
+
+.lista_Tareas p {
+    margin: 0;
+    font-weight: 600;
+    color: #333333;
+    font-size: 1.1em;
+}
+
+.lista_Tareas small {
+    margin: 0;
+    color: #666666;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+/* Botón de eliminar (posicionado de forma más discreta) */
+.btn-eliminar {
+    background-color: white; /* Fondo transparente */
+    color: red; /* Texto rojo */
+    border: 1px solid red ; /* Borde rojo */
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+    position: absolute; /* Posicionamiento absoluto */
+    top: 15px; /* Arriba */
+    right: 15px; /* A la derecha */
+}
+
+.btn-eliminar:hover {
+    background-color: red;
+    color: white;
+}
+
+/* Mensaje cuando no hay tareas */
+.mensaje-vacio {
+    text-align: center;
+    color: rgb(115, 112, 112);
+    font-style: italic;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px var(--color-sombra-suave);
+    margin-top: 20px;
+    font-size: 1.1em;
+}
