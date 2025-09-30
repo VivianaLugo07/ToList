@@ -1,5 +1,18 @@
 <?php
-// filepath: c:\Users\Colibecas\OneDrive\Desktop\servicioConsCopy\plantilla-despliegue\public-html\index.php
+// Inicia la sesión para poder acceder a las variables de sesión.
+// ¡DEBE SER LA PRIMERA LÍNEA DEL ARCHIVO, ANTES DE CUALQUIER HTML!
+session_start();
+
+// Verificación de seguridad: si no hay un 'user_id' en la sesión,
+// significa que el usuario no ha iniciado sesión, así que lo redirigimos.
+if (!isset($_SESSION['user_id'])) {
+    header('Location: federacion.php');
+    exit();
+}
+
+// Guardamos el nombre del usuario en una variable para usarlo fácilmente.
+// Usamos htmlspecialchars() como medida de seguridad para prevenir ataques XSS.
+$nombreUsuario = htmlspecialchars($_SESSION['user_name']);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -11,15 +24,21 @@
     <title>Lista de Tareas</title>
 </head>
 <body>
+    <div class="header-container">
+    <p class="welcome-message">Sesión de: <strong><?php echo $nombreUsuario; ?></strong></p>
+    
+    <a href="logout.php" class="btn-logout">Cerrar Sesión</a>
+</div>
+
     <div id="tareas">
         <h1>Lista de Tareas</h1>
         <label for="tituloTareas">Título de la tarea:</label>
-        <input type="text" id="tituloTareas">
+        <input type="text" id="tituloTareas" >
 
         <label for="descripcionTareas">Descripción de la tarea:</label>
-        <input type="text" id="descripcionTareas">
-        
-        <button id="btn_agregar">Agregar</button>
+        <input type="text" id="descripcionTareas" >
+
+        <button id="btn_agregar">Agregar Tarea</button>
     </div>
 
     <div id="contenedor">
