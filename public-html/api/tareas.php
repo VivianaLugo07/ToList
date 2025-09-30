@@ -1,7 +1,4 @@
 <?php
-// /public-html/api/tareas.php
-
-// 1. INICIAR SESIÓN Y CONFIGURAR CABECERAS
 session_start();
 header('Content-Type: application/json');
 
@@ -12,16 +9,15 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// 3. CONECTAR A LA BASE DE DATOS
+
 require_once __DIR__ . "/../bd-mysqli.php";
 
 $userId = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
-// 4. GESTIONAR LA PETICIÓN SEGÚN EL MÉTODO HTTP
+
 switch ($method) {
     case 'GET':
-        // --- OBTENER TODAS LAS TAREAS DEL USUARIO ---
         $stmt = $conexion->prepare("SELECT id, titulo, texto FROM tareas WHERE usuario_id = ? ORDER BY id DESC");
         $stmt->bind_param("s", $userId);
         $stmt->execute();
