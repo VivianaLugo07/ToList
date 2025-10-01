@@ -1,176 +1,169 @@
+// /public-html/script.js
 
-const tituloTareas = document.getElementById("tituloTareas");
-const descripcionTareas = document.getElementById("descripcionTareas");
-const btn_agregar = document.getElementById("btn_agregar");
+// --- SELECTORES Y VARIABLES GLOBALES ---
+const tituloInput = document.getElementById("tituloTareas");
+const descripcionInput = document.getElementById("descripcionTareas");
+const btnAgregar = document.getElementById("btn_agregar");
 const contenedor = document.getElementById("contenedor");
+const btnLogout = document.getElementById('logout-btn');
 const API_URL = '/proyecto/api/tareas.php';
 
-const cargarTareas = async () => {
-    if (navigator.onLine) {
-        try {
-            console.log("Modo Online: Cargando tareas desde el servidor.");
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error("Error del servidor.");
-            const tareasServidor = await response.json();
+let listaTareas = [];
+let pendingOps = JSON.parse(localStorage.getItem('pendingOps')) || [];
 
-            localStorage.setItem('tareas_cache', JSON.stringify(tareasServidor));
-            renderizarTareas(tareasServidor);
-            document.querySelector("h1").innerText = "Lista de Tareas";
-        } catch (error) {
-            console.warn("No se pudo conectar. Mostrando caché local.", error);
-            const tareasCache = JSON.parse(localStorage.getItem("tareas_cache")) || [];
-            renderizarTareas(tareasCache);
-            document.querySelector("h1").innerText = "Lista de Tareas (Modo Offline)";
-        }
-    } else {
-        console.log("Modo Offline: Mostrando tareas desde el caché local.");
-        const tareasCache = JSON.parse(localStorage.getItem("tareas_cache")) || [];
-        renderizarTareas(tareasCache);
-        document.querySelector("h1").innerText = "Lista de Tareas (Modo Offline)";
-    }
-};
+// --- FUNCIONES AUXILIARES DE LOCALSTORAGE ---
+function savePendingOps() {
+    localStorage.setItem('pendingOps', JSON.stringify(pendingOps));
+}
 
-const renderizarTareas = (tareas) => {
+function saveTasksLocal() {
+    localStorage.setItem('tasks', JSON.stringify(listaTareas.map(t => ({
+        id: t.id || null,
+        titulo: t.titulo,
+        texto: t.texto,
+        offline: t.offline || false
+    }))));
+}
 
+// --- RENDERIZADO Y LÓGICA DE LA UI ---
+function renderizarTareas() {
     contenedor.innerHTML = "";
-    if (!tareas || tareas.length === 0) {
+    if (listaTareas.length === 0) {
         contenedor.innerHTML = "<p class='mensaje-vacio'>¡No hay tareas pendientes! ✨</p>";
         return;
     }
-    tareas.forEach((tarea) => {
-        let listaTareas = document.createElement("div");
-        listaTareas.classList.add("lista_Tareas");
-        listaTareas.dataset.id = tarea.id;
-        let tituloDiv = document.createElement("p");
-        tituloDiv.textContent = tarea.titulo;
-        let contenidoDiv = document.createElement("small");
-        contenidoDiv.textContent = tarea.texto || tarea.descripcion;
-        let eliminar_button = document.createElement("button");
-        eliminar_button.textContent = "Eliminar";
-        eliminar_button.classList.add("btn-eliminar");
-        eliminar_button.addEventListener("click", () => eliminarTarea(tarea.id));
-        listaTareas.appendChild(tituloDiv);
-        listaTareas.appendChild(contenidoDiv);
-        listaTareas.appendChild(eliminar_button);
-        contenedor.appendChild(listaTareas);
+    listaTareas.forEach((tarea, index) => {
+        const divTarea = document.createElement("div");
+        divTarea.classList.add("lista_Tareas");
+
+        const tituloP = document.createElement("p");
+        tituloP.textContent = tarea.titulo;
+
+        const textoSmall = document.createElement("small");
+        textoSmall.textContent = tarea.texto;
+
+        const eliminarBtn = document.createElement("button");
+        eliminarBtn.textContent = "Eliminar";
+        eliminarBtn.classList.add("btn-eliminar");
+        eliminarBtn.onclick = (e) => {
+            e.stopPropagation();
+            eliminarTarea(tarea, index);
+        };
+
+        divTarea.appendChild(tituloP);
+        divTarea.appendChild(textoSmall);
+        divTarea.appendChild(eliminarBtn);
+        contenedor.appendChild(divTarea);
     });
-};
-
-const agregarTarea = async () => {
-    const titulo = tituloTareas.value.trim();
-    const descripcion = descripcionTareas.value.trim();
-    if (titulo === "" || descripcion === "") {
-        alert("Por favor, completa el título y la descripción.");
-        return;
-    }
-    const nuevaTarea = {
-        id: `temp-${Date.now()}`,
-        titulo: titulo,
-        descripcion: descripcion,
-    };
-    if (navigator.onLine) {
-        try {
-            await fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(nuevaTarea),
-            });
-            cargarTareas();
-        } catch (error) {
-            console.warn("Fallo el envío. Guardando para sincronizar.", error);
-            guardarPendiente("agregar", nuevaTarea);
-        }
-    } else {
-        console.log("Offline: Tarea guardada en pendientes para agregar.");
-        guardarPendiente("agregar", nuevaTarea);
-        const tareasCache = JSON.parse(localStorage.getItem("tareas_cache")) || [];
-        tareasCache.unshift(nuevaTarea);
-        localStorage.setItem("tareas_cache", JSON.stringify(tareasCache));
-        renderizarTareas(tareasCache);
-    }
-    descripcionTareas.value = "";
-    tituloTareas.value = "";
-};
-
-const eliminarTarea = async (id) => {
-    if (!confirm("¿Estás seguro de que deseas eliminar esta tarea?")) return;
-    if (navigator.onLine) {
-        try {
-            await fetch(`${API_URL}?id=${id}`, { method: "DELETE" });
-            cargarTareas();
-        } catch (error) {
-            console.warn("Fallo la eliminación. Guardando para sincronizar.", error);
-            guardarPendiente("eliminar", { id });
-        }
-
-    } else {
-        console.log(`Offline: Tarea ${id} marcada en pendientes para eliminar.`);
-        guardarPendiente("eliminar", { id });
-        let tareasCache = JSON.parse(localStorage.getItem("tareas_cache")) || [];
-        tareasCache = tareasCache.filter((t) => t.id !== id);
-        localStorage.setItem("tareas_cache", JSON.stringify(tareasCache));
-        renderizarTareas(tareasCache);
-    }
-};
-
-function guardarPendiente(tipo, payload) {
-    const pendientes = JSON.parse(localStorage.getItem(`pendientes_${tipo}`)) || [];
-    pendientes.push(payload);
-    localStorage.setItem(`pendientes_${tipo}`, JSON.stringify(pendientes));
 }
 
-const sincronizarPendientes = async () => {
-    console.log("Conexión recuperada. Sincronizando...");
-    const pendientesAgregar = JSON.parse(localStorage.getItem('pendientes_agregar')) || [];
-    const pendientesEliminar = JSON.parse(localStorage.getItem('pendientes_eliminar')) || [];
-
-    if (pendientesAgregar.length === 0 && pendientesEliminar.length === 0) {
-        console.log("No hay nada que sincronizar.");
-        return;
-    }
-
-    document.querySelector("h1").innerText = "Sincronizando... 🔄";
-
-    const promesasAgregar = pendientesAgregar.map(tarea =>
-        fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(tarea),
-        })
-    );
-    const promesasEliminar = pendientesEliminar.map(tarea =>
-        fetch(`${API_URL}?id=${tarea.id}`, { method: 'DELETE' })
-    );
-
+// --- LÓGICA DE DATOS Y API ---
+async function cargarTareas() {
     try {
-        await Promise.all([...promesasAgregar, ...promesasEliminar]);
-        console.log("¡Sincronización completada!");
-        localStorage.removeItem('pendientes_agregar');
-        localStorage.removeItem('pendientes_eliminar');
-        await cargarTareas();
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error("Servidor o sesión no disponible");
 
-    } catch (error) {
-        console.error("Error durante la sincronización. Se reintentará más tarde.", error);
-        await cargarTareas();
+        const tareasServidor = await res.json();
+        const tareasLocales = JSON.parse(localStorage.getItem('tasks')) || [];
+        const tareasOffline = tareasLocales.filter(t => t.offline);
+
+        listaTareas = [...tareasServidor, ...tareasOffline];
+        saveTasksLocal();
+    } catch (err) {
+        console.warn("Modo Offline: Cargando tareas desde localStorage.");
+        listaTareas = JSON.parse(localStorage.getItem('tasks')) || [];
     }
-};
+    renderizarTareas();
+    syncOfflineOps(); // Siempre intentar sincronizar al cargar
+}
 
-window.addEventListener('online', sincronizarPendientes);
+async function agregarTarea() {
+    const titulo = tituloInput.value.trim();
+    const texto = descripcionInput.value.trim();
+    if (titulo === '' || texto === '') return;
 
-document.addEventListener('DOMContentLoaded', () => {
-    cargarTareas();
-    if (navigator.onLine) {
-        sincronizarPendientes();
+    tituloInput.value = '';
+    descripcionInput.value = '';
+
+    const nuevaTarea = { titulo, texto, offline: true };
+    listaTareas.unshift(nuevaTarea);
+    saveTasksLocal();
+    renderizarTareas();
+    syncOfflineOps(); // Intentar sincronizar inmediatamente
+}
+
+async function eliminarTarea(tarea, index) {
+    listaTareas.splice(index, 1); // Elimina de la UI al instante
+
+    if (tarea.id) { // Si la tarea tiene un ID, vino del servidor
+        pendingOps.push({ type: "delete", id: tarea.id });
+        savePendingOps();
     }
+    saveTasksLocal();
+    renderizarTareas();
+    syncOfflineOps(); // Intentar sincronizar inmediatamente
+}
+
+// --- LÓGICA DE SINCRONIZACIÓN ---
+async function syncOfflineOps() {
+    if (!navigator.onLine) return;
+
+    // 1. Sincronizar tareas nuevas (marcadas como "offline")
+    const tareasNuevas = listaTareas.filter(t => t.offline);
+    for (const tarea of tareasNuevas) {
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ titulo: tarea.titulo, descripcion: tarea.texto }),
+            });
+            const tareaSincronizada = await res.json();
+            // Actualizamos la tarea local con el ID del servidor y quitamos el flag
+            tarea.id = tareaSincronizada.id;
+            delete tarea.offline;
+        } catch (err) {
+            console.warn("Fallo al sincronizar nueva tarea, se reintentará luego.", err);
+        }
+    }
+
+    // 2. Sincronizar operaciones pendientes (eliminaciones)
+    const ops = [...pendingOps];
+    pendingOps = []; // Limpiamos la lista original para evitar re-procesar
+
+    for (const op of ops) {
+        try {
+            if (op.type === 'delete') {
+                await fetch(`${API_URL}?id=${op.id}`, { method: 'DELETE' });
+            }
+        } catch (err) {
+            console.warn("Fallo al sincronizar una operación, se reintentará luego.", err);
+            pendingOps.push(op); // Si falla, la devolvemos a la lista de pendientes
+        }
+    }
+
+    savePendingOps();
+    saveTasksLocal();
+    renderizarTareas();
+}
+
+// --- EVENT LISTENERS DE LA APLICACIÓN ---
+btnAgregar.addEventListener('click', agregarTarea);
+
+btnLogout.addEventListener('click', (event) => {
+    event.preventDefault();
+    localStorage.clear();
+    window.location.href = event.target.href;
 });
 
+window.addEventListener('online', syncOfflineOps);
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
+// --- INICIALIZACIÓN ---
+document.addEventListener('DOMContentLoaded', () => {
+    // La sesión ya se verifica en PHP, así que cargamos las tareas directamente
+    cargarTareas();
+    if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./service-worker.js')
-            .then(reg => console.log('Service Worker registrado correctamente.'))
-            .catch(err => console.log('Error al registrar el Service Worker:', err));
-
-    });
-
-}
+            .then(reg => console.log('Service Worker registrado'))
+            .catch(err => console.error('Error registrando Service Worker', err));
+    }
+});
