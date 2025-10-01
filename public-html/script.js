@@ -11,8 +11,12 @@ window.initializeApp = function() {
     
     // --- LÓGICA DE CIERRE DE SESIÓN ---
     btnLogout.addEventListener('click', (event) => {
+        // Prevenimos la navegación inmediata para asegurarnos de que el localStorage se limpie primero.
         event.preventDefault();
+        // Limpiamos cualquier dato de la aplicación que esté en el navegador.
         localStorage.clear();
+        // Una vez limpio, redirigimos a logout.php para que el servidor
+        // inicie el proceso de cierre de sesión global (Single Logout).
         window.location.href = event.target.href;
     });
 

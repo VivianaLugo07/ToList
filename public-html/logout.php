@@ -1,12 +1,17 @@
 <?php
-// /public-html/logout.php
-require_once('/var/www/simplesaml/src/_autoload.php');
+// logout se saml
+session_start();
+// Destruir variable de sesion $_SESSION['user_id']
+unset($_SESSION['user_id']);
 
-$SP_ORIGEN = getenv('SOURCE'); 
+// Borrar localstorage//
+//echo "<script>localStorage.clear(); window.location.href = 'index.php';</script>";
+
+// Configuración de SAML
+$saml_lib_path = '/var/www/simplesaml/src/_autoload.php';
+require_once($saml_lib_path);
+$SP_ORIGEN = getenv('SOURCE') ?: 'default-sp';
 $as = new \SimpleSAML\Auth\Simple($SP_ORIGEN);
+$as->logout('http://localhost/proyecto/federacion.php'); // URL de redirección post-logout
 
-// La URL a la que se regresará después de que el sistema de la UdeC cierre la sesión
-$redirectUrl = "http://localhost/proyecto/federacion.php?logout_success=true";
-
-$as->logout($redirectUrl);
-?>
+exit();
