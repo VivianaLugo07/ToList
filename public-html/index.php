@@ -1,12 +1,15 @@
 <?php
 session_start();
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: federacion.php');
     exit();
 }
+
+// Órdenes anti-caché para el navegador
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+
 $nombreUsuario = htmlspecialchars($_SESSION['user_name']);
 ?>
 <!DOCTYPE html>
@@ -20,6 +23,28 @@ $nombreUsuario = htmlspecialchars($_SESSION['user_name']);
     <title>Lista de Tareas</title>
 </head>
 <body>
+    <script>
+        // Este bloque se ejecuta inmediatamente, antes de que se muestre el contenido.
+        fetch('api/check_session.php', { cache: 'no-store' })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.loggedIn) {
+                    // Si el servidor confirma que NO hay sesión...
+                    console.log("GUARDIA: ¡Sesión no válida detectada! Redirigiendo...");
+                    // 1. Limpiamos cualquier dato fantasma del navegador.
+                    localStorage.clear();
+                    // 2. Redirigimos y reemplazamos la entrada del historial para que no se pueda volver.
+                    window.location.replace('federacion.php');
+                }
+            })
+            .catch(error => {
+                // Si hay un error de red, asumimos lo peor y redirigimos.
+                console.error("GUARDIA: Error de red al verificar sesión, redirigiendo.", error);
+                localStorage.clear();
+                window.location.replace('federacion.php');
+            });
+    </script>
+
     <div class="header-container">
         <p class="welcome-message">Sesión de: <strong><?php echo $nombreUsuario; ?></strong></p>
         <a href="logout.php" class="btn-logout" id="logout-btn">Cerrar Sesión 🚪</a>
@@ -34,14 +59,7 @@ $nombreUsuario = htmlspecialchars($_SESSION['user_name']);
         <button id="btn_agregar">Agregar</button>
     </div>
 
-    <div id="contenedor">
-        </div>
-
+    <div id="contenedor"></div>
     <script src="script.js"></script>
-    <script>
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) window.location.reload();
-        });
-    </script>
 </body>
 </html>
