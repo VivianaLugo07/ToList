@@ -55,7 +55,7 @@ $nombreUsuario = htmlspecialchars($_SESSION['user_name']);
 
     <div class="header-container">
         <p class="welcome-message">Sesión de: <strong><?php echo $nombreUsuario; ?></strong></p>
-        <a href="logout.php" class="btn-logout" id="logout-btn">Cerrar Sesión 🚪</a>
+        <a href="logout.php" class="btn-logout" id="logout-btn">Cerrar Sesión</a>
     </div>
     <div id="tareas">
         <h1>Lista de Tareas</h1>

@@ -20,11 +20,11 @@ self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log("✅ Cache abierto. Cacheando assets iniciales...");
+                console.log("Cache abierto. Cacheando assets iniciales...");
                 return cache.addAll(ASSETS_TO_CACHE);
             })
-            .then(() => console.log("👍 Assets cacheados correctamente."))
-            .catch((err) => console.error("❌ Falló el cacheo inicial de assets:", err))
+            .then(() => console.log("Assets cacheados correctamente."))
+            .catch((err) => console.error("Falló el cacheo inicial de assets:", err))
     );
 });
 
@@ -44,7 +44,7 @@ self.addEventListener("activate", (event) => {
                 keys
                     .filter((key) => key !== CACHE_NAME)
                     .map((oldKey) => {
-                        console.log(`🗑️ Borrando caché antiguo: ${oldKey}`);
+                        console.log(`Borrando caché antiguo: ${oldKey}`);
                         return caches.delete(oldKey);
                     })
             )
@@ -80,7 +80,7 @@ self.addEventListener("fetch", (event) => {
     if (request.mode === "navigate") {
         event.respondWith(
             fetch(request).catch(() => {
-                console.log('📶 Offline: Sirviendo página principal desde caché.');
+                console.log('Offline: Sirviendo página principal desde caché.');
                 return caches.match("/proyecto/index.php");
             })
         );
@@ -113,7 +113,7 @@ self.addEventListener("fetch", (event) => {
 // Esta parte ya estaba perfecta, no necesita cambios.
 
 self.addEventListener('sync', (event) => {
-    console.log('🔄 Evento Sync recibido:', event.tag);
+    console.log('Evento Sync recibido:', event.tag);
 
     if (event.tag === 'sync-tasks') {
         event.waitUntil(notifyClientsToSync());

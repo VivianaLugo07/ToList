@@ -86,4 +86,5 @@ switch ($method) {
 
 // 5. CERRAR LA CONEXIÓN
 $conexion->close();
+
 ?>
