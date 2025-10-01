@@ -1,15 +1,11 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['user_id'])) {
     header('Location: federacion.php');
     exit();
 }
-
-// Órdenes anti-caché para el navegador
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
-
 $nombreUsuario = htmlspecialchars($_SESSION['user_name']);
 ?>
 <!DOCTYPE html>
@@ -24,32 +20,43 @@ $nombreUsuario = htmlspecialchars($_SESSION['user_name']);
 </head>
 <body>
     <script>
-        // Este bloque se ejecuta inmediatamente, antes de que se muestre el contenido.
-        fetch('api/check_session.php', { cache: 'no-store' })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.loggedIn) {
-                    // Si el servidor confirma que NO hay sesión...
-                    console.log("GUARDIA: ¡Sesión no válida detectada! Redirigiendo...");
-                    // 1. Limpiamos cualquier dato fantasma del navegador.
+        // Función que arranca la lógica principal de la app en script.js
+        function startApp() {
+            if (window.initializeApp) {
+                window.initializeApp();
+            } else {
+                // Si script.js tarda en cargar, esperamos un poco
+                document.addEventListener('DOMContentLoaded', window.initializeApp);
+            }
+        }
+
+        // El guardia ahora es "offline-aware"
+        if (navigator.onLine) {
+            // Si estamos ONLINE, verificamos la sesión con el servidor
+            fetch('api/check_session.php', { cache: 'no-store' })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.loggedIn) {
+                        localStorage.clear();
+                        window.location.replace('federacion.php');
+                    } else {
+                        startApp(); // La sesión es válida, arranca la app
+                    }
+                })
+                .catch(() => {
                     localStorage.clear();
-                    // 2. Redirigimos y reemplazamos la entrada del historial para que no se pueda volver.
                     window.location.replace('federacion.php');
-                }
-            })
-            .catch(error => {
-                // Si hay un error de red, asumimos lo peor y redirigimos.
-                console.error("GUARDIA: Error de red al verificar sesión, redirigiendo.", error);
-                localStorage.clear();
-                window.location.replace('federacion.php');
-            });
+                });
+        } else {
+            // Si estamos OFFLINE, confiamos en la caché y arrancamos la app
+            startApp();
+        }
     </script>
 
     <div class="header-container">
         <p class="welcome-message">Sesión de: <strong><?php echo $nombreUsuario; ?></strong></p>
         <a href="logout.php" class="btn-logout" id="logout-btn">Cerrar Sesión 🚪</a>
     </div>
-
     <div id="tareas">
         <h1>Lista de Tareas</h1>
         <label for="tituloTareas">Título:</label>
@@ -58,7 +65,6 @@ $nombreUsuario = htmlspecialchars($_SESSION['user_name']);
         <input type="text" id="descripcionTareas" placeholder="Descripción de la tarea">
         <button id="btn_agregar">Agregar</button>
     </div>
-
     <div id="contenedor"></div>
     <script src="script.js"></script>
 </body>
